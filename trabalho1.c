@@ -62,6 +62,7 @@ void pesquisarPessoa() {
         fclose(file);
 
         int existe = 0;
+        int posicao_inicial = 0;
         for (int i = 0; i < lines; i++) {
             if (strcmp(codeDesejado, pessoas[i].code) == 0) {
                 printf("\nNome: %s\n", pessoas[i].nome);
@@ -69,14 +70,16 @@ void pesquisarPessoa() {
                 existe = 1;
 
                 PESSOA aux;
-                strcpy(aux.code, pessoas[0].code);
-                strcpy(aux.nome, pessoas[0].nome);
+                strcpy(aux.code, pessoas[posicao_inicial].code);
+                strcpy(aux.nome, pessoas[posicao_inicial].nome);
 
-                strcpy(pessoas[0].code, pessoas[i].code);
-                strcpy(pessoas[0].nome, pessoas[i].nome);
+                strcpy(pessoas[posicao_inicial].code, pessoas[i].code);
+                strcpy(pessoas[posicao_inicial].nome, pessoas[i].nome);
 
                 strcpy(pessoas[i].code, aux.code);
                 strcpy(pessoas[i].nome, aux.nome);
+
+                posicao_inicial ++;
             } else {
                 //Nothing to do.
             }
