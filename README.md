@@ -1,8 +1,8 @@
 # EDA2
 
 Este é o trabalho 1, referente ao código de busca realizado por:
-#	150120371 - Bruno Oliveira Dantas
-#	160016428 - Paulo Victor de Menezes Lopes.
+##	150120371 - Bruno Oliveira Dantas
+##	160016428 - Paulo Victor de Menezes Lopes.
 
 Nele, foi utilizado a pesquisa sequencial com o método "mover pra frente" e salvando em arquivo.
 
