@@ -14,7 +14,7 @@ int main() {
 		d[i] = rand() % 10;
 		u[i] = rand() % 10;
 	}
-	FILE* file = fopen("pessoas.txt", "w");
+	FILE* file = fopen("pessoas.txt", "a");
 	for (int i = 0; i < MAX; i++) {
 		fprintf(file, "%d%d%d%d%d%d PauloVictor%d\n", cm[i], dm[i], m[i],
 			c[i], d[i], u[i], i);
