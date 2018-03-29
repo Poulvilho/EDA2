@@ -13,7 +13,8 @@ void menu() {
     printf("\n1- Cadastrar uma pessoa\n");
     printf("2- Listar pessoas\n");
     printf("3- Pesquisar pessoa\n");
-    printf("4- Ordenar pessoas\n");
+    printf("4- Ordenar pessoas por Bubble Sort\n");
+    printf("5- Ordenar pessoas por Insertion Sort\n");
     printf("0- Fechar programa\n");
     printf("\n\tSelecione a opcao desejada: ");
 }
@@ -145,10 +146,54 @@ void ordena_bubble() {
     }
 }
 
-void contar_tempo(){
+void ordena_insertion() {
+    FILE* file = fopen("pessoas.txt", "r");
+    if (file != NULL) {
+
+        int lines = 0;
+        PESSOA *pessoas = (PESSOA *) malloc(sizeof(PESSOA));
+
+        for (int i = 0; !feof(file); i++) {
+            fscanf(file, "%s %s\n", pessoas[i].code, pessoas[i].nome);
+                pessoas = (PESSOA *) realloc(pessoas, (i + 2) * sizeof(PESSOA));
+                lines = i + 1;
+        }
+        fclose(file);
+
+        PESSOA aux;
+
+        for(int i = 0; i < lines; i++) {
+            int j = i;
+            while ((j != 0) && (strcmp(pessoas[j].code, pessoas[j - 1].code) > 0)) {
+
+                strcpy(aux.code, pessoas[j].code);
+                strcpy(aux.nome, pessoas[j].nome);
+
+                strcpy(pessoas[j].code, pessoas[j - 1].code);
+                strcpy(pessoas[j].nome, pessoas[j - 1].nome);
+
+                strcpy(pessoas[j - 1].code, aux.code);
+                strcpy(pessoas[j - 1].nome, aux.nome);
+                j--;
+            }
+        }
+        FILE* file = fopen("pessoas.txt", "w");
+           for (int i = 0; i < lines; i++) {
+                fprintf(file, "%s %s\n", pessoas[i].code, pessoas[i].nome);
+            }
+        fclose(file);
+        free(pessoas);
+    }
+}
+
+void contar_tempo(int opc){
     clock_t Ticks[2];
     Ticks[0] = clock();
-    ordena_bubble();
+    if (opc = 4){
+        ordena_bubble();
+    }else {
+        ordena_insertion();
+    }
     Ticks[1] = clock();
     double Tempo = (Ticks[1] - Ticks[0]) * 1000.0 / CLOCKS_PER_SEC;
     printf("Tempo gasto: %g ms.", Tempo);
@@ -179,7 +224,11 @@ int main() {
                 break;
 
             case 4:
-                contar_tempo();
+                contar_tempo(opc);
+            break;  
+
+            case 5:
+                contar_tempo(opc);
             break;  
 
             default:
