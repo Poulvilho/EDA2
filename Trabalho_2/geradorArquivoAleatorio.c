@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define MAX 300000
+#define MAX 50000
 
 int main() {
 	int cm[MAX], dm[MAX], m[MAX], c[MAX], d[MAX], u[MAX];
@@ -14,7 +14,7 @@ int main() {
 		d[i] = rand() % 10;
 		u[i] = rand() % 10;
 	}
-	FILE* file = fopen("pessoas.txt", "a");
+	FILE* file = fopen("pessoas.txt", "w");
 	for (int i = 0; i < MAX; i++) {
 		fprintf(file, "%d%d%d%d%d%d PauloVictor%d\n", cm[i], dm[i], m[i],
 			c[i], d[i], u[i], i);

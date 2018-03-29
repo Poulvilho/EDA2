@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define MAX 1000000
+#define MAX 100
 
 int main() {
 	unsigned long int aleatorio[MAX];
