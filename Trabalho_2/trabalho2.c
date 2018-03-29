@@ -106,7 +106,6 @@ void ordena_bubble() {
 
     FILE* file = fopen("pessoas.txt", "r");
     if (file != NULL) {
-
         int lines = 0;
         PESSOA *pessoas = (PESSOA *) malloc(sizeof(PESSOA));
 
@@ -116,14 +115,14 @@ void ordena_bubble() {
                 lines = i + 1;
         }
         fclose(file);
+
         int cont = 0;
         PESSOA aux;
-
         do{
             cont = 0;
             for (int i = 0; i < lines - 1; i++) {
                 if (strcmp(pessoas[i].code , pessoas[i+1].code) > 0) {
-                        
+
                     strcpy(aux.code, pessoas[i+1].code);
                     strcpy(aux.nome, pessoas[i+1].nome);
 
@@ -135,12 +134,12 @@ void ordena_bubble() {
                     cont++;
                 }
             }
-        }while (cont != 0);
+        } while (cont != 0);
 
         FILE* file = fopen("pessoas.txt", "w");
-           for (int i = 0; i < lines; i++) {
-                fprintf(file, "%s %s\n", pessoas[i].code, pessoas[i].nome);
-            }
+        for (int i = 0; i < lines; i++) {
+            fprintf(file, "%s %s\n", pessoas[i].code, pessoas[i].nome);
+        }
         fclose(file);
         free(pessoas);
     }
@@ -186,19 +185,18 @@ void ordena_insertion() {
     }
 }
 
-void contar_tempo(int opc){
+void contar_tempo(int opc) {
     clock_t Ticks[2];
     Ticks[0] = clock();
-    if (opc = 4){
+    if (opc == 4){
         ordena_bubble();
-    }else {
+    } else {
         ordena_insertion();
     }
     Ticks[1] = clock();
     double Tempo = (Ticks[1] - Ticks[0]) * 1000.0 / CLOCKS_PER_SEC;
     printf("Tempo gasto: %g ms.", Tempo);
     getchar();
-    
 }
 
 

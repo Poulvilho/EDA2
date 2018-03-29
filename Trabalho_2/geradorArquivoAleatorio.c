@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define MAX 10
+#define MAX 100
 
 int main() {
 	int cm[MAX], dm[MAX], m[MAX], c[MAX], d[MAX], u[MAX];
