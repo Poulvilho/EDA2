@@ -163,7 +163,7 @@ void ordena_insertion() {
 
         for(int i = 0; i < lines; i++) {
             int j = i;
-            while ((j != 0) && (strcmp(pessoas[j].code, pessoas[j - 1].code) > 0)) {
+            while ((j != 0) && (strcmp(pessoas[j].code, pessoas[j - 1].code) < 0)) {
 
                 strcpy(aux.code, pessoas[j].code);
                 strcpy(aux.nome, pessoas[j].nome);
