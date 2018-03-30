@@ -103,7 +103,6 @@ void pesquisarPessoa() {
 }
 
 void ordena_bubble() {
-
     FILE* file = fopen("pessoas.txt", "r");
     if (file != NULL) {
         int lines = 0;
@@ -142,13 +141,14 @@ void ordena_bubble() {
         }
         fclose(file);
         free(pessoas);
+    } else {
+        printf("\nERRO OU NAO TEM ARQUIVO PARA ORDENAR\n");
     }
 }
 
 void ordena_insertion() {
     FILE* file = fopen("pessoas.txt", "r");
     if (file != NULL) {
-
         int lines = 0;
         PESSOA *pessoas = (PESSOA *) malloc(sizeof(PESSOA));
 
@@ -160,7 +160,6 @@ void ordena_insertion() {
         fclose(file);
 
         PESSOA aux;
-
         for(int i = 0; i < lines; i++) {
             int j = i;
             while ((j != 0) && (strcmp(pessoas[j].code, pessoas[j - 1].code) < 0)) {
@@ -182,6 +181,8 @@ void ordena_insertion() {
             }
         fclose(file);
         free(pessoas);
+    } else {
+        printf("\nERRO OU NAO TEM ARQUIVO PARA ORDENAR\n");
     }
 }
 
@@ -198,7 +199,6 @@ void contar_tempo(int opc) {
     printf("Tempo gasto: %g ms.", Tempo);
     getchar();
 }
-
 
 int main() {
     int opc;
@@ -223,11 +223,11 @@ int main() {
 
             case 4:
                 contar_tempo(opc);
-            break;  
+                break;  
 
             case 5:
                 contar_tempo(opc);
-            break;  
+                break;  
 
             default:
                 printf("\nDIGITE UMA OPCAO VALIDA!!");
