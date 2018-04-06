@@ -13,8 +13,8 @@ void menu() {
     printf("\n1- Cadastrar uma pessoa\n");
     printf("2- Listar pessoas\n");
     printf("3- Pesquisar pessoa\n");
-    printf("4- Ordenar pessoas por Bubble Sort\n");
-    printf("5- Ordenar pessoas por Insertion Sort\n");
+    printf("4- Ordenar pessoas por Shell Sort\n");
+    printf("5- Ordenar pessoas por Quick Sort\n");
     printf("0- Fechar programa\n");
     printf("\n\tSelecione a opcao desejada: ");
 }
@@ -150,7 +150,39 @@ void ordena_shellSort() {
     }
 }
 
-void ordena_insertion() {
+void ordena_quickSort(PESSOA *pessoas, int i, int lines) {
+        PESSOA meio, aux;
+        int j;
+
+        if(lines < 2)
+            return;
+         
+        strcpy(meio.code, pessoas[lines/2].code);
+        strcpy(meio.nome, pessoas[lines/2].nome);  
+
+        for(i=0, j = lines - 1;;i++, j--) {
+            while((strcmp(pessoas[i].code, meio.code) < 0))
+                i++;
+            while((strcmp(meio.code, pessoas[j].code) < 0))
+                j--;
+            if(i>=j)
+                break;
+
+            strcpy(aux.code, pessoas[i].code);
+            strcpy(aux.nome, pessoas[i].nome);
+
+            strcpy(pessoas[i].code, pessoas[j].code);
+            strcpy(pessoas[i].nome, pessoas[j].nome);
+
+            strcpy(pessoas[j].code, aux.code);
+            strcpy(pessoas[j].nome, aux.nome);
+        } 
+        ordena_quickSort(pessoas, i, lines);
+        ordena_quickSort(pessoas + i, lines -i, lines);
+
+}
+
+void open_close_file(){
     FILE* file = fopen("pessoas.txt", "r");
     if (file != NULL) {
         int lines = 0;
@@ -162,23 +194,11 @@ void ordena_insertion() {
                 lines = i + 1;
         }
         fclose(file);
+        
+        int i = 0;
+        ordena_quickSort(pessoas, i, lines);
 
-        PESSOA aux;
-        for(int i = 0; i < lines; i++) {
-            int j = i;
-            while ((j != 0) && (strcmp(pessoas[j].code, pessoas[j - 1].code) < 0)) {
 
-                strcpy(aux.code, pessoas[j].code);
-                strcpy(aux.nome, pessoas[j].nome);
-
-                strcpy(pessoas[j].code, pessoas[j - 1].code);
-                strcpy(pessoas[j].nome, pessoas[j - 1].nome);
-
-                strcpy(pessoas[j - 1].code, aux.code);
-                strcpy(pessoas[j - 1].nome, aux.nome);
-                j--;
-            }
-        }
         FILE* file = fopen("pessoas.txt", "w");
            for (int i = 0; i < lines; i++) {
                 fprintf(file, "%s %s\n", pessoas[i].code, pessoas[i].nome);
@@ -196,7 +216,7 @@ void contar_tempo(int opc) {
     if (opc == 4){
         ordena_shellSort();
     } else {
-        ordena_insertion();
+        open_close_file();
     }
     Ticks[1] = clock();
     double Tempo = (Ticks[1] - Ticks[0]) * 1000.0 / CLOCKS_PER_SEC;
