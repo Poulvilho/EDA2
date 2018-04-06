@@ -102,7 +102,7 @@ void pesquisarPessoa() {
     }
 }
 
-void ordena_bubble() {
+void ordena_shellSort() {
     FILE* file = fopen("pessoas.txt", "r");
     if (file != NULL) {
         int lines = 0;
@@ -115,25 +115,29 @@ void ordena_bubble() {
         }
         fclose(file);
 
-        int cont = 0;
-        PESSOA aux;
-        do{
-            cont = 0;
-            for (int i = 0; i < lines - 1; i++) {
-                if (strcmp(pessoas[i].code , pessoas[i+1].code) > 0) {
+        int i, j, gap = 1;
+        PESSOA value;
 
-                    strcpy(aux.code, pessoas[i+1].code);
-                    strcpy(aux.nome, pessoas[i+1].nome);
+        while (gap < lines) {
+            gap = 3*gap+1;
+        }
+        while (gap > 1) {
+            gap /= 3;
+            for(i = gap; i < lines; i++) {
+                strcpy(value.code, pessoas[i].code);
+                strcpy(value.nome, pessoas[i].nome);
+                j = i - gap;
 
-                    strcpy(pessoas[i+1].code, pessoas[i].code);
-                    strcpy(pessoas[i+1].nome, pessoas[i].nome);
-
-                    strcpy(pessoas[i].code, aux.code);
-                    strcpy(pessoas[i].nome, aux.nome);
-                    cont++;
+                while (j >= 0 && (strcmp(value.code, pessoas[j].code) < 0)) {
+                    strcpy(pessoas[j + gap].code, pessoas[j].code);
+                    strcpy(pessoas[j + gap].nome, pessoas[j].nome);
+                    j -= gap; 
                 }
+                strcpy(pessoas[j + gap].code, value.code);
+                strcpy(pessoas[j + gap].nome, value.nome);
             }
-        } while (cont != 0);
+        }
+
 
         FILE* file = fopen("pessoas.txt", "w");
         for (int i = 0; i < lines; i++) {
@@ -190,7 +194,7 @@ void contar_tempo(int opc) {
     clock_t Ticks[2];
     Ticks[0] = clock();
     if (opc == 4){
-        ordena_bubble();
+        ordena_shellSort();
     } else {
         ordena_insertion();
     }
