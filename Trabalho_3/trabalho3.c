@@ -13,8 +13,8 @@ void menu() {
     printf("\n1- Cadastrar uma pessoa\n");
     printf("2- Listar pessoas\n");
     printf("3- Pesquisar pessoa\n");
-    printf("4- Ordenar pessoas por Shell Sort\n");
-    printf("5- Ordenar pessoas por Quick Sort\n");
+    printf("4- Ordenar pessoas por Shell Sort (Crescente)\n");
+    printf("5- Ordenar pessoas por Quick Sort (Decrescente)\n");
     printf("0- Fechar programa\n");
     printf("\n\tSelecione a opcao desejada: ");
 }
@@ -150,9 +150,9 @@ void ordena_shellSort() {
     }
 }
 
-void ordena_quickSort(PESSOA *pessoas, int i, int lines) {
+void ordena_quickSort(PESSOA *pessoas, int lines) {
         PESSOA meio, aux;
-        int j;
+        int i, j;
 
         if(lines < 2)
             return;
@@ -160,10 +160,10 @@ void ordena_quickSort(PESSOA *pessoas, int i, int lines) {
         strcpy(meio.code, pessoas[lines/2].code);
         strcpy(meio.nome, pessoas[lines/2].nome);  
 
-        for(i=0, j = lines - 1;;i++, j--) {
-            while((strcmp(pessoas[i].code, meio.code) < 0))
+        for(i = 0, j = lines - 1;;i++, j--) {
+            while((strcmp(pessoas[i].code, meio.code) > 0))
                 i++;
-            while((strcmp(meio.code, pessoas[j].code) < 0))
+            while((strcmp(meio.code, pessoas[j].code) > 0))
                 j--;
             if(i>=j)
                 break;
@@ -176,10 +176,9 @@ void ordena_quickSort(PESSOA *pessoas, int i, int lines) {
 
             strcpy(pessoas[j].code, aux.code);
             strcpy(pessoas[j].nome, aux.nome);
-        } 
-        ordena_quickSort(pessoas, i, lines);
-        ordena_quickSort(pessoas + i, lines -i, lines);
-
+        }
+        ordena_quickSort(pessoas, i);
+        ordena_quickSort(pessoas + i, lines - i);
 }
 
 void open_close_file(){
@@ -195,9 +194,7 @@ void open_close_file(){
         }
         fclose(file);
         
-        int i = 0;
-        ordena_quickSort(pessoas, i, lines);
-
+        ordena_quickSort(pessoas, lines);
 
         FILE* file = fopen("pessoas.txt", "w");
            for (int i = 0; i < lines; i++) {
