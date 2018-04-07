@@ -102,6 +102,84 @@ void pesquisarPessoa() {
     }
 }
 
+void mergeSort(PESSOA *pessoas, int posicaoInicio, int posicaoFim) {
+    int i, j, k, metadeTamanho;
+    PESSOA *vetorTemp;
+
+    if(posicaoInicio == posicaoFim) return;
+
+    // ordenacao recursiva das duas metades
+    metadeTamanho = (posicaoInicio + posicaoFim ) / 2;
+    mergeSort(pessoas, posicaoInicio, metadeTamanho);
+    mergeSort(pessoas, metadeTamanho + 1, posicaoFim);
+    // intercalacao no vetor temporario t
+    i = posicaoInicio;
+    j = metadeTamanho + 1;
+    k = 0;
+    vetorTemp = (PESSOA *) malloc(sizeof(PESSOA) * (posicaoFim - posicaoInicio + 1));
+
+    while(i < metadeTamanho + 1 || j  < posicaoFim + 1) {
+        if (i == metadeTamanho + 1 ) { // i passou do final da primeira metade, pegar v[j]
+            strcpy(vetorTemp[k].code, pessoas[j].code);
+            strcpy(vetorTemp[k].nome, pessoas[j].nome);
+            j++;
+            k++;
+        } else {
+            if (j == posicaoFim + 1) { // j passou do final da segunda metade, pegar v[i]
+                strcpy(vetorTemp[k].code, pessoas[i].code);
+                strcpy(vetorTemp[k].nome, pessoas[i].nome);
+                i++;
+                k++;
+            } else {
+                if (pessoas[i].code < pessoas[j].code) {
+                    strcpy(vetorTemp[k].code, pessoas[i].code);
+                    strcpy(vetorTemp[k].nome, pessoas[i].nome);
+                    i++;
+                    k++;
+                } else {
+                    strcpy(vetorTemp[k].code, pessoas[j].code);
+                    strcpy(vetorTemp[k].nome, pessoas[j].nome);
+                    j++;
+                    k++;
+                }
+            }
+        }
+
+    }
+    // copia vetor intercalado para o vetor original
+    for(i = posicaoInicio; i <= posicaoFim; i++) {
+        strcpy(pessoas[i].code, vetorTemp[i - posicaoInicio].code);
+        strcpy(pessoas[i].nome, vetorTemp[i - posicaoInicio].nome);
+    }
+    free(vetorTemp);
+}
+
+void ordena_mergeSort() {
+    FILE* file = fopen("pessoas.txt", "r");
+    if (file != NULL) {
+        int lines = 0;
+        PESSOA *pessoas = (PESSOA *) malloc(sizeof(PESSOA));
+
+        for (int i = 0; !feof(file); i++) {
+            fscanf(file, "%s %s\n", pessoas[i].code, pessoas[i].nome);
+            pessoas = (PESSOA *) realloc(pessoas, (i + 2) * sizeof(PESSOA));
+            lines = i + 1;
+        }
+        fclose(file);
+
+        mergeSort(pessoas, 0, lines);
+
+        FILE* file = fopen("pessoas.txt", "w");
+        for (int i = 0; i < lines; i++) {
+            fprintf(file, "%s %s\n", pessoas[i].code, pessoas[i].nome);
+        }
+        fclose(file);
+        free(pessoas);        
+    } else {
+        printf("\nERRO OU NENHUMA PESSOA CADASTRADA!\n");
+    }
+}
+
 void ordena_shellSort() {
     FILE* file = fopen("pessoas.txt", "r");
     if (file != NULL) {
@@ -150,7 +228,7 @@ void ordena_shellSort() {
     }
 }
 
-void ordena_quickSort(PESSOA *pessoas, int lines) {
+void quickSort(PESSOA *pessoas, int lines) {
         PESSOA meio, aux;
         int i, j;
 
@@ -177,11 +255,11 @@ void ordena_quickSort(PESSOA *pessoas, int lines) {
             strcpy(pessoas[j].code, aux.code);
             strcpy(pessoas[j].nome, aux.nome);
         }
-        ordena_quickSort(pessoas, i);
-        ordena_quickSort(pessoas + i, lines - i);
+        quickSort(pessoas, i);
+        quickSort(pessoas + i, lines - i);
 }
 
-void open_close_file(){
+void ordena_quickSort(){
     FILE* file = fopen("pessoas.txt", "r");
     if (file != NULL) {
         int lines = 0;
@@ -194,7 +272,7 @@ void open_close_file(){
         }
         fclose(file);
         
-        ordena_quickSort(pessoas, lines);
+        quickSort(pessoas, lines);
 
         FILE* file = fopen("pessoas.txt", "w");
            for (int i = 0; i < lines; i++) {
@@ -211,9 +289,9 @@ void contar_tempo(int opc) {
     clock_t Ticks[2];
     Ticks[0] = clock();
     if (opc == 4){
-        ordena_shellSort();
+        ordena_mergeSort();
     } else {
-        open_close_file();
+        ordena_quickSort();
     }
     Ticks[1] = clock();
     double Tempo = (Ticks[1] - Ticks[0]) * 1000.0 / CLOCKS_PER_SEC;
