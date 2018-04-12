@@ -102,7 +102,7 @@ void pesquisarPessoa() {
     }
 }
 
-void mergeSort(PESSOA *pessoas, int posicaoInicio, int posicaoFim) {
+/*void mergeSort(PESSOA *pessoas, int posicaoInicio, int posicaoFim) {
     int i, j, k, metadeTamanho;
     PESSOA *vetorTemp;
 
@@ -179,7 +179,7 @@ void ordena_mergeSort() {
         printf("\nERRO OU NENHUMA PESSOA CADASTRADA!\n");
     }
 }
-
+*/
 void ordena_shellSort() {
     FILE* file = fopen("pessoas.txt", "r");
     if (file != NULL) {
@@ -289,7 +289,7 @@ void contar_tempo(int opc) {
     clock_t Ticks[2];
     Ticks[0] = clock();
     if (opc == 4){
-        ordena_mergeSort();
+        ordena_shellSort();
     } else {
         ordena_quickSort();
     }
