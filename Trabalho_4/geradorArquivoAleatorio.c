@@ -16,7 +16,7 @@ int main() {
 	}
 	FILE* file = fopen("pessoas.txt", "w");
 	for (int i = 0; i < MAX; i++) {
-		fprintf(file, "%d%d%d%d%d%d PauloVictor%d\n", cm[i], dm[i], m[i],
+		fprintf(file, "%d%d%d%d%d%d\tPauloVictor%d\n", cm[i], dm[i], m[i],
 			c[i], d[i], u[i], i);
 	}
 	fclose(file);

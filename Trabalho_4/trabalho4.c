@@ -19,34 +19,53 @@ void menu() {
     printf("\n1- Cadastrar uma pessoa\n");
     printf("2- Listar pessoas\n");
     printf("3- Pesquisar pessoa\n");
-    printf("4- Ordenar pessoas por Shell Sort (Crescente)\n");
-    printf("5- Ordenar pessoas por Quick Sort (Decrescente)\n");
     printf("0- Fechar programa\n");
     printf("\n\tSelecione a opcao desejada: ");
 }
 
-void inserir(ARVORE **raiz, PESSOA novoNo) {
-    if ((*raiz) == NULL) {
-        strcpy((*raiz)->pessoa.code, novoNo.code);
-        strcpy((*raiz)->pessoa.nome, novoNo.nome);
-        (*raiz)->esquerda = NULL;
-        (*raiz)->direita = NULL;
-    } else if (strcmp((*raiz)->pessoa.code, novoNo.code) <= 0) {
-        inserir(&(*raiz)->esquerda, novoNo);
+ARVORE *inserir(ARVORE *raiz, PESSOA novoNo) {
+    if (raiz == NULL) {
+        raiz = (ARVORE *)malloc(sizeof(ARVORE *));
+        raiz->pessoa = novoNo;
+        //strcpy(raiz->pessoa.code, novoNo.code);
+        //strcpy(raiz->pessoa.nome, novoNo.nome);
+        raiz->esquerda = NULL;
+        raiz->direita = NULL;
+    } else if (strcmp(raiz->pessoa.code, novoNo.code) <= 0) {
+        raiz->esquerda = inserir(raiz->esquerda, novoNo);
     } else {
-        inserir(&(*raiz)->direita, novoNo);
+        raiz->direita = inserir(raiz->direita, novoNo);
     }
+    return raiz;
 }
 
-void cadastrarPessoa(ARVORE **raiz) {
+ARVORE *carregaArvore(ARVORE *raiz) {
+    FILE* file = fopen("pessoas.txt", "r");
+    if (file != NULL) {
+        PESSOA novoNo;
+        while (!feof(file)) {
+            fscanf(file, "%s\t%s\n", novoNo.code, novoNo.nome);
+            raiz = inserir(raiz, novoNo);
+            printf("%s\n", novoNo.code);
+        }
+    } else {
+        printf("\nERRO OU NENHUMA PESSOA CADASTRADA\n");
+    }
+
+    fclose(file);
+    return raiz;
+}
+
+ARVORE *cadastrarPessoa(ARVORE *raiz) {
     printf("\n\tCadastro de Pessoa\n");
     PESSOA novoNo;
     printf("Nome (sem espacos): ");
     scanf("%s", novoNo.nome);
     printf("Codigo de 6 digitos: ");
     scanf("%s", novoNo.code);
+    raiz = inserir(raiz, novoNo);
 
-    inserir(&(*raiz), novoNo);
+    return raiz;
 }
 
 void listar_inOrdem(ARVORE* raiz) {
@@ -57,34 +76,25 @@ void listar_inOrdem(ARVORE* raiz) {
    } else {
         printf("\nERRO OU NENHUMA PESSOA CADASTRADA\n");
    }
-
 }
 
-void salvaArquivo(ARVORE **raiz) {
+void salvaArquivo(ARVORE *raiz) {
     FILE* file = fopen("pessoas.txt", "w");
-    if ((*raiz)->esquerda != NULL) {
-        salvaArquivo(&(*raiz)->esquerda);
+    if (raiz->esquerda != NULL) {
+        salvaArquivo(raiz->esquerda);
     }
 
-    fprintf(file, "%s %s\n", (*raiz)->pessoa.code, (*raiz)->pessoa.nome);
+    fprintf(file, "%s %s\n", raiz->pessoa.code, raiz->pessoa.nome);
 
-    if ((*raiz)->direita != NULL) {
-        salvaArquivo(&(*raiz)->direita);
+    if (raiz->direita != NULL) {
+        salvaArquivo(raiz->direita);
     }
 }
+
 int main() {
     ARVORE* raiz = NULL;
-    FILE* file = fopen("pessoas.txt", "r");
-    if (file != NULL) {
-        while (!feof(file)) {
-            PESSOA novoNo;
-            fscanf(file, "%s %s\n", novoNo.code, novoNo.nome);
-            inserir(&raiz, novoNo);
-        }
-    } else {
-        printf("\nERRO OU NENHUMA PESSOA CADASTRADA\n");
-    }
-    
+    raiz = carregaArvore(raiz);
+
     int opc;
     do {
         menu();
@@ -94,7 +104,7 @@ int main() {
                 break;
 
             case 1:
-                cadastrarPessoa(&raiz);
+                raiz = cadastrarPessoa(raiz);
                 break;
 
             case 2:
@@ -121,8 +131,9 @@ int main() {
     } while (opc);
 
     while (raiz!= NULL) {
-        salvaArquivo(&raiz);
+        salvaArquivo(raiz);
     }
 
+    free(raiz);
     return 0;
 }
