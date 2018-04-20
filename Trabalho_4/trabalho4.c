@@ -5,11 +5,11 @@
 
 typedef struct pessoa {
     char nome[50];
-    char code[7];
+    int code;
 } PESSOA;
 
 typedef struct arvore {
-    PESSOA pessoa;
+    int pessoa;
     struct arvore *esquerda; 
     struct arvore *direita; 
 } ARVORE;
@@ -17,13 +17,15 @@ typedef struct arvore {
 void menu() {
     printf("\n\t\tTrabalho EDA2\n");
     printf("\n1- Cadastrar uma pessoa\n");
-    printf("2- Listar pessoas\n");
-    printf("3- Pesquisar pessoa\n");
+    printf("2- Listar pessoas PRE ORDEM\n");
+    printf("3- Listar pessoas EM ORDEM\n");
+    printf("4- Listar pessoas POS ORDEM\n");
+    printf("5- Pesquisar pessoa\n");
     printf("0- Fechar programa\n");
     printf("\n\tSelecione a opcao desejada: ");
 }
 
-ARVORE *inserir(ARVORE *raiz, PESSOA novoNo) {
+ARVORE *inserir(ARVORE *raiz, int novoNo) {
     if (raiz == NULL) {
         raiz = (ARVORE *)malloc(sizeof(ARVORE *));
         raiz->pessoa = novoNo;
@@ -31,8 +33,10 @@ ARVORE *inserir(ARVORE *raiz, PESSOA novoNo) {
         //strcpy(raiz->pessoa.nome, novoNo.nome);
         raiz->esquerda = NULL;
         raiz->direita = NULL;
-    } else if (strcmp(raiz->pessoa.code, novoNo.code) <= 0) {
+    } else if (raiz->pessoa > novoNo) {
         raiz->esquerda = inserir(raiz->esquerda, novoNo);
+    } else if (raiz->pessoa == novoNo ) {
+        //Nothing to do.
     } else {
         raiz->direita = inserir(raiz->direita, novoNo);
     }
@@ -44,9 +48,8 @@ ARVORE *carregaArvore(ARVORE *raiz) {
     if (file != NULL) {
         PESSOA novoNo;
         while (!feof(file)) {
-            fscanf(file, "%s\t%s\n", novoNo.code, novoNo.nome);
-            raiz = inserir(raiz, novoNo);
-            printf("%s\n", novoNo.code);
+            fscanf(file, "%d\t%s\n", &novoNo.code, novoNo.nome);
+            raiz = inserir(raiz, novoNo.code);  
         }
     } else {
         printf("\nERRO OU NENHUMA PESSOA CADASTRADA\n");
@@ -61,34 +64,74 @@ ARVORE *cadastrarPessoa(ARVORE *raiz) {
     PESSOA novoNo;
     printf("Nome (sem espacos): ");
     scanf("%s", novoNo.nome);
-    printf("Codigo de 6 digitos: ");
-    scanf("%s", novoNo.code);
-    raiz = inserir(raiz, novoNo);
+    printf("Codigo de 6 numeros: ");
+    scanf("%d", &novoNo.code);
+
+    FILE *file = fopen("pessoas.txt", "a");
+    fprintf(file, "%d\t%s\n", novoNo.code, novoNo.nome);
+    fclose (file);
+
+    raiz = inserir(raiz, novoNo.code);
 
     return raiz;
 }
 
-void listar_inOrdem(ARVORE* raiz) {
-   if(raiz != NULL) {
-       listar_inOrdem(raiz->esquerda);
-       printf("%s\t%s\n", raiz->pessoa.code, raiz->pessoa.nome);
-       listar_inOrdem(raiz->direita);
-   } else {
+void mostrarDado(int referencia) {
+    FILE *file = fopen("pessoas.txt", "r");
+    if (file != NULL){
+        PESSOA pessoa;
+        int encontrado = 0;
+        while(!feof(file)) {
+            fscanf(file, "%d\t%s", &pessoa.code, pessoa.nome);
+            if (referencia == pessoa.code) {
+                printf("%d\t%s\n", pessoa.code, pessoa.nome);
+                encontrado = 1;
+            }
+        }
+        if (!encontrado) {
+            printf("\nPESSOA NAO ENCONTRADA\n");
+        }
+        fclose(file);
+    } else {
         printf("\nERRO OU NENHUMA PESSOA CADASTRADA\n");
+    }
+}
+
+void listar_preOrdem(ARVORE* raiz) {
+   if(raiz != NULL) {
+        mostrarDado(raiz->pessoa);
+        listar_preOrdem(raiz->esquerda);
+        listar_preOrdem(raiz->direita);
+   } else {
+        //Nothing to do.
    }
 }
 
-void salvaArquivo(ARVORE *raiz) {
-    FILE* file = fopen("pessoas.txt", "w");
-    if (raiz->esquerda != NULL) {
-        salvaArquivo(raiz->esquerda);
-    }
+void listar_inOrdem(ARVORE* raiz) {
+   if(raiz != NULL) {
+        listar_inOrdem(raiz->esquerda);
+        mostrarDado(raiz->pessoa);
+        listar_inOrdem(raiz->direita);
+   } else {
+        //Nothing to do.
+   }
+}
 
-    fprintf(file, "%s %s\n", raiz->pessoa.code, raiz->pessoa.nome);
+void listar_posOrdem(ARVORE* raiz) {
+   if(raiz != NULL) {
+        mostrarDado(raiz->pessoa);
+        listar_inOrdem(raiz->direita);
+        listar_inOrdem(raiz->esquerda);
+   } else {
+        //Nothing to do.
+   }
+}
 
-    if (raiz->direita != NULL) {
-        salvaArquivo(raiz->direita);
-    }
+void pesquisarPessoa() {
+    printf("Digite o codigo de 6 numeros da pessoa desejada: ");
+    int codeDesejado;
+    scanf("%d", &codeDesejado);
+    mostrarDado(codeDesejado);
 }
 
 int main() {
@@ -108,20 +151,38 @@ int main() {
                 break;
 
             case 2:
-                printf("Codigo:\tNome:\n");
-                listar_inOrdem(raiz);
+                if (raiz != NULL) {
+                    printf("Codigo:\tNome:\n");
+                    listar_preOrdem(raiz);
+                } else {
+                    printf("\nERRO OU NENHUMA PESSOA CADASTRADA\n");
+                }
                 break;
 
             case 3:
-                //pesquisarPessoa();
+                if (raiz != NULL) {
+                    printf("Codigo:\tNome:\n");
+                    listar_inOrdem(raiz);
+                } else {
+                    printf("\nERRO OU NENHUMA PESSOA CADASTRADA\n");
+                }
                 break;
 
             case 4:
-                //contar_tempo(opc);
+                if (raiz != NULL) {
+                    printf("Codigo:\tNome:\n");
+                    listar_posOrdem(raiz);
+                } else {
+                    printf("\nERRO OU NENHUMA PESSOA CADASTRADA\n");
+                }
                 break;  
 
             case 5:
-                //contar_tempo(opc);
+                if (raiz != NULL) {
+                    pesquisarPessoa();
+                } else {
+                    printf("\nERRO OU NENHUMA PESSOA CADASTRADA\n");
+                }
                 break;  
 
             default:
@@ -129,10 +190,6 @@ int main() {
                 break;
         }
     } while (opc);
-
-    while (raiz!= NULL) {
-        salvaArquivo(raiz);
-    }
 
     free(raiz);
     return 0;
