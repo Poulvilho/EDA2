@@ -3,6 +3,8 @@
 #include <string.h>
 #include <time.h>
 
+int contador = 0;
+
 typedef struct pessoa {
     char nome[50];
     int code;
@@ -12,6 +14,7 @@ typedef struct arvore {
     int pessoa;
     struct arvore *esquerda; 
     struct arvore *direita; 
+    int fator;
 } ARVORE;
 
 void menu() {
@@ -59,6 +62,117 @@ ARVORE *carregaArvore(ARVORE *raiz) {
     return raiz;
 }
 
+int maior(int a, int b){
+    if (a > b){
+        return a;
+    }
+    else{
+        return b;
+    }
+}
+
+int Altura(ARVORE *raiz){
+    if(raiz == NULL){
+        return 0;
+    }
+    else{
+        return 1 + maior(Altura(raiz->esquerda), Altura(raiz->direita));
+    }
+}
+
+
+void rot_dir(ARVORE *r) {
+  ARVORE* b = r;
+  ARVORE* a = b->esquerda;
+  b->esquerda = a->direita;
+  a->direita = b;
+  a->fator = 0;
+  b->fator = 0;
+  r = a;
+}
+
+void rot_esq(ARVORE *raiz) {
+  ARVORE* a = raiz;
+  ARVORE* b = a->direita;
+  a->direita = b->esquerda;
+  b->esquerda = a;
+  a->fator = 0;
+  b->fator = 0;
+  raiz = b;
+}
+
+void rot_dir_esq(ARVORE *r) {
+     ARVORE *a = r;
+     ARVORE *c = a->direita;
+     ARVORE *b = c->esquerda;
+     c->esquerda = b->direita;
+     a->direita = b->esquerda;
+     b->esquerda = a;
+     b->direita = c;
+     if(b->fator == -1){
+       a->fator = 0;
+       c->fator = 1;
+     }
+     else if(b->fator == 0){
+       a->fator = 0;
+       c->fator = 0;
+     }
+     else if(b->fator == 1){
+       a->fator = -1;
+       c->fator = 0;
+     }
+     b->fator = 0;
+     r = b;
+}
+
+void rot_esq_dir(ARVORE *raiz) {
+    printf("aiaiai\n");
+     ARVORE *c = raiz;
+     ARVORE *a = c->esquerda;
+     ARVORE *b = a->direita;
+     c->esquerda = b->direita;
+     a->direita = b->esquerda;
+     b->esquerda = a;
+     b->direita = c;
+     if(b->fator == -1){
+       a->fator = 0;
+       c->fator = 1;
+     }
+     else if(b->fator == 0){
+       a->fator = 0;
+       c->fator = 0;
+     }
+     else if(b->fator == 1){
+       a->fator = -1;
+       c->fator = 0;
+     }
+     b->fator = 0;
+     raiz = b;
+}
+
+void Balanceia (ARVORE *raiz){
+    printf("oioio\n");
+
+    (raiz)->fator = Altura((raiz)->esquerda) - Altura((raiz)->direita);
+
+    if((raiz)->fator == 2 && (raiz)->esquerda->fator == -1){
+        rot_esq_dir(&(*raiz));
+        contador = contador + 2;
+    }
+    else if((raiz)->fator == 2 && (raiz)->esquerda->fator == 1){
+        rot_dir(&(*raiz));
+        contador++;
+    }
+    else if((raiz)->fator == -2 && (raiz)->direita->fator == 1){
+        rot_dir_esq(&(*raiz));
+        contador = contador + 2;
+    }
+    else if ((raiz)->fator == -2 && (raiz)->direita->fator == -1) {
+        rot_esq(&(*raiz));
+        contador++;
+    }
+}
+
 ARVORE *cadastrarPessoa(ARVORE *raiz) {
     printf("\n\tCadastro de Pessoa\n");
     PESSOA novoNo;
@@ -72,7 +186,7 @@ ARVORE *cadastrarPessoa(ARVORE *raiz) {
     fclose (file);
 
     raiz = inserir(raiz, novoNo.code);
-
+    Balanceia(&(*raiz));
     return raiz;
 }
 
