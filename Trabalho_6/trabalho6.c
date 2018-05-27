@@ -79,18 +79,42 @@ void MergeSortIterativo(int vector[], int vector_size){
 
 int main(){
 
-  int qtd_numero = 0, i = 0, numero_vetor = 0;  
-  printf("Insira a quantidade de numeros que deseja ordenar: \n");
-  scanf("%d", &qtd_numero);
-  
-  int vector[qtd_numero];
+  int qtd_numero = 0, i = 0, numero_vetor = 0, option = 0;  
 
-  int vector_size = qtd_numero;
-  printf("Insira os numeros que deseja ordenar: \n");
-  for(i=0; i <= vector_size -1; i++) {
-    scanf("%d", &numero_vetor);
-    vector[i] = numero_vetor;
+  printf("*** MENU ***\n");
+  printf("0 - Sair.\n");
+  printf("1 - Inserir os Números manualmente.\n");
+  printf("2 - Inserir os Números aleatoriamente.\n");
+  printf("Escolha uma opção: ");
+  scanf("%d", &option);
+
+  if (option == 0) {
+    printf("Saindo...\n");
+    return 1;
   }
+    printf("Insira a quantidade de numeros que deseja ordenar: \n");
+    scanf("%d", &qtd_numero);
+      
+    int vector[qtd_numero];
+
+    int vector_size = qtd_numero;
+  
+    switch(option) {
+        case 1:
+            printf("Insira os numeros que deseja ordenar: \n");
+            for(i=0; i <= vector_size -1; i++) {
+                scanf("%d", &numero_vetor);
+                vector[i] = numero_vetor;
+            }
+        break;
+        case 2:
+            for(i=0; i <= vector_size -1; i++) {
+                vector[i] = rand() % 100;
+            }
+        break;
+        default:
+            printf("Entrada Invalida!\n");    
+    }
 
   printf("\nVetor:\n\n[ ");
 
