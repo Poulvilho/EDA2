@@ -5,7 +5,7 @@ Este é o trabalho 7 com o código referente à Programação Dinêmica realizad
 ##	150120371 - Bruno Oliveira Dantas
 ##	160016428 - Paulo Victor de Menezes Lopes.
 
-Para o trabalho foi implementado o código de achar o maior subsequência crescente dentro de uma vetor, que é resolvido por programação dinâmica, e tem complexidade O(n²).
+Para o trabalho foi implementado o código de achar o maior subsequência crescente ou descrescente dentro de um vetor, que é resolvido por programação dinâmica, e tem complexidade O(n²).
 
 Tal trabalho foi desenvolvimento em C. Para rodá-lo é bem fácil:
 
