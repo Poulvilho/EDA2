@@ -87,7 +87,7 @@ int add_node(Graph *G, int x){
     else{
         for(q=G->start; q!=NULL; q=q->next){
             if(q->id == x)
-                return input_ERROR; //The node already exists
+                return x++; //Att id
         }
         p = (Node *) malloc(sizeof(Node));
         if (p==NULL)
